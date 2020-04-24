@@ -5,8 +5,8 @@ import java.util.Random;
 public class PyrDown {
 
     public static void main(String[] args) {
-        int rows = 60;
-        int cols = 40;
+        int rows = 30;
+        int cols = 20;
         Random random = new Random();
 
         Integer[][] srcData = new Integer[rows][cols];
@@ -22,8 +22,9 @@ public class PyrDown {
 
         Mat<Integer> src = new Mat<>(rows, cols, srcData);
         Mat<Integer> dst = new Mat<>(rows, cols, dstData);
-        streamPyrDown(src, dst, rows, cols);
+
         System.out.println(src);
+        streamPyrDown(src, dst, rows, cols);
         System.out.println(dst);
     }
 
@@ -59,6 +60,9 @@ public class PyrDown {
                 //}
             }
         }
+
+        System.out.println(filterIn.toString());
+        System.out.println(filterOut.toString());
     }
 
     private static class StreamPyrDownHelper {
@@ -94,7 +98,7 @@ public class PyrDown {
             this.cols = cols;
 
             this.window = new Integer[winSize][winSize];
-            this.rowBuf = new Integer[winSize][cols + (winSize >> 1)];
+            this.rowBuf = new Integer[winSize][cols + halfWinSize];
             /* rowBufIndex 会按照以下的逻辑变化 0 1 2 3 4 ; 1 2 3 4 0; 2 3 4 0 1 ... */
             this.rowBufIndex = new int[winSize];
         }
@@ -132,7 +136,7 @@ public class PyrDown {
          */
         void initRowBuf() {
             // 如果winSize是5 这里循环2 3
-            for (int initBuf = rowBufIndex[halfWinSize]; initBuf < rowBufIndex[halfWinSize]; initBuf++) {
+            for (int initBuf = rowBufIndex[halfWinSize]; initBuf < rowBufIndex[winSize - 1]; initBuf++) {
                 for (int col = 0; col < cols; col++) {
                     rowBuf[initBuf][col] = src.read();
                 }
@@ -216,6 +220,15 @@ public class PyrDown {
          * @return java.lang.Integer
          */
         Integer windowCalculate() {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < winSize; i++) {
+                for (int j = 0; j < winSize; j++) {
+                    sb.append(String.format("%-4s", window[i][j]));
+                }
+                sb.append("\r\n");
+            }
+            System.out.println("计算窗口：");
+            System.out.println(sb.toString());
             return 8;
         }
 
