@@ -47,7 +47,7 @@ public class Mat<T> {
         sb.append("data=\r\n");
 
         for (int i = 0; i < rows; i++) {
-            data.subList(cols * i, cols * i + cols).forEach( d -> sb.append(String.format("%-4s", d)));
+            data.subList(cols * i, cols * i + cols).forEach(d -> sb.append(String.format("%-4s", d)));
             sb.append("\r\n");
         }
         return sb.toString();
